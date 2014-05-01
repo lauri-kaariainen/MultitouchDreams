@@ -80,7 +80,7 @@
 
 	 $("."+classNameToMatch).css({
     '-ms-touch-action' :    'none',
-    'touch-action' :        'none',});
+    'touch-action' :        'none'});
 	var eventString = "MSPointerMove touchmove mousemove MSPointerDown touchstart mousedown MSPointerUp touchend mouseup";
 	
 	for (var i = 0; i < eventString.split(' ').length;i++)
