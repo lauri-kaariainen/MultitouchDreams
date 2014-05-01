@@ -78,7 +78,7 @@
 
 	}
 
-	 $('.dragTarget').css({
+	 $(classNameToMatch).css({
     '-ms-touch-action' :    'none',
     'touch-action' :        'none',});
 	var eventString = "MSPointerMove touchmove mousemove MSPointerDown touchstart mousedown MSPointerUp touchend mouseup";
