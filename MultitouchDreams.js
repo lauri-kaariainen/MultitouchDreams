@@ -23,6 +23,9 @@
 			eventObject.preventDefault();
 		eventObject.preventDefault();
 
+		//this is done b/c firefox doesn't have scrElement.
+		eventObject.srcElement = eventObject.srcElement ? eventObject.srcElement : eventObject.target;
+
 		
 		// if we have an array of changedTouches, use it, else create an array of one with our eventObject
 		var touchPoints = (typeof eventObject.changedTouches != 'undefined') ? eventObject.changedTouches : [eventObject];
