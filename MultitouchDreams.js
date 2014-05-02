@@ -23,6 +23,9 @@
 			eventObject.preventDefault();
 		eventObject.preventDefault();
 
+		//this is done b/c firefox doesn't have scrElement.
+		eventObject.srcElement = eventObject.srcElement ? eventObject.srcElement : eventObject.target;
+
 		
 		// if we have an array of changedTouches, use it, else create an array of one with our eventObject
 		var touchPoints = (typeof eventObject.changedTouches != 'undefined') ? eventObject.changedTouches : [eventObject];
@@ -34,7 +37,8 @@
 			if (eventObject.type.match(/(down|start)$/i)) {
 				// process mousedown, MSPointerDown, and touchstart
 				lastXY[touchPointId] = { x: touchPoint.pageX, y: touchPoint.pageY };
-			
+				
+				
 				if($(eventObject.srcElement).attr('class').match(classNameToMatch)) {
 					elemList[touchPointId] = eventObject.srcElement;
 		
@@ -78,9 +82,9 @@
 
 	}
 
-	 $('.dragTarget').css({
+	 $("."+classNameToMatch).css({
     '-ms-touch-action' :    'none',
-    'touch-action' :        'none',});
+    'touch-action' :        'none'});
 	var eventString = "MSPointerMove touchmove mousemove MSPointerDown touchstart mousedown MSPointerUp touchend mouseup";
 	
 	for (var i = 0; i < eventString.split(' ').length;i++)
