@@ -36,46 +36,62 @@
 			 
 			if (eventObject.type.match(/(down|start)$/i)) {
 				// process mousedown, MSPointerDown, and touchstart
-				lastXY[touchPointId] = { x: touchPoint.pageX, y: touchPoint.pageY };
+				lastXY[touchPointId] = { 
+					x: touchPoint.pageX,
+					y: touchPoint.pageY, 
+					layerX: touchPoint.pageX - Math.round($(eventObject.srcElement).position().left),
+					layerY: touchPoint.pageY - Math.round($(eventObject.srcElement).position().top) 
+				};
 			
 				if($(eventObject.srcElement).attr('class').match(classNameToMatch)) {
 					elemList[touchPointId] = eventObject.srcElement;
-		
-				
+					
+					var layerX = lastXY[touchPointId].layerX;
+					var layerY = lastXY[touchPointId].layerY;
+					
 					startMove(touchPointId,touchPoint.pageX,touchPoint.pageY);
-				}		
+				}		  
 				
 			}
 			else if (eventObject.type.match(/move$/i)) {
 				// process mousemove, MSPointerMove, and touchmove
-				if (lastXY[touchPointId] && !(lastXY[touchPointId].x == touchPoint.pageX && lastXY[touchPointId].y == touchPoint.pageY)) {
-					lastXY[touchPointId] = { x: touchPoint.pageX, y: touchPoint.pageY };
-			
+					if (lastXY[touchPointId] && !(lastXY[touchPointId].x == touchPoint.pageX && lastXY[touchPointId].y == touchPoint.pageY)) {
+						lastXY[touchPointId].x = touchPoint.pageX;
+						lastXY[touchPointId].y = touchPoint.pageY; 
 
-					extendMove(touchPointId,touchPoint.pageX,touchPoint.pageY);
 					
-				}
+						var layerX = lastXY[touchPointId].layerX;
+						var layerY = lastXY[touchPointId].layerY;
+
+				
+						//layerX/Y is the value where the touching of an element began first
+						extendMove(touchPointId,touchPoint.pageX,touchPoint.pageY,layerX,layerY);
+						
+					}
 			}
 			else if (eventObject.type.match(/(up|end)$/i)) {
 			
 				delete lastXY[touchPointId];
 				delete elemList[touchPointId];
 			
-			
 			}
 			
 		}
 	}
-	function startMove(id,x,y){
-		var realY = y - $(elemList[id]).css('height').replace("px",'')/2;
-		var realX = x - $(elemList[id]).css('width').replace("px",'')/2;
-		$(elemList[id]).css({"top":realY+"px","left": realX+"px"});
+	function startMove(id,pageX,pageY){
+		
 	}
 	
-	function extendMove(id,x,y){
-		var realY = y - $(elemList[id]).css('height').replace("px",'')/2;
-		var realX = x - $(elemList[id]).css('width').replace("px",'')/2;
-		$(elemList[id]).css({"top":realY+"px","left": realX+"px"});
+	function extendMove(id,pageX,pageY,layerX,layerY){
+		
+		var realY = pageY - layerY;
+		var realX = pageX - layerX;
+
+		// console.log($(elemList[id]).position()); 
+		// console.log("extendMove: realX:realY  "+realX+":"+realY); 
+		// console.log("extendMove: pageX:pageY  "+pageX+":"+pageY);
+		// console.log("extendMove: layerX:layerY  "+layerX+":"+layerY);
+		$(elemList[id]).css({"top": realY+"px","left": realX+"px"});
 	}
 	function stopMove(id,x,y){
 
@@ -87,5 +103,5 @@
 	var eventString = "MSPointerMove touchmove mousemove MSPointerDown touchstart mousedown MSPointerUp touchend mouseup";
 	
 	for (var i = 0; i < eventString.split(' ').length;i++)
-		$('body')[0].addEventListener(eventString.split(' ')[i],DoEvent);
+		$(document)[0].addEventListener(eventString.split(' ')[i],DoEvent);
 }
